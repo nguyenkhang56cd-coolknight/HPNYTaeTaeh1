@@ -1,188 +1,276 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Happy New Year 2026 – FINAL</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chúc Mừng Năm Mới 2026 🎆</title>
 
-    body{
-      background:#000;
-      color:#fff;
-      height:100vh;
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  overflow:hidden;
+  background:#000;
+  font-family:'Segoe UI',sans-serif;
+  color:#fff;
+}
 
-    /* ===== LOCK SCREEN ===== */
-    #lockScreen{
-      position:fixed;inset:0;background:#000;
-      display:flex;flex-direction:column;
-      align-items:center;justify-content:center;
-      z-index:9999;
-    }
+/* ===== LOCK SCREEN ===== */
+.lock{
+  position:fixed;inset:0;
+  background:radial-gradient(circle,#14001f,#000);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:9999;
+  transition:opacity .8s;
+}
 
-    .heart{font-size:64px;animation:beat 1s infinite}
+.heart{
+  width:100px;height:100px;background:#ff2d55;
+  transform:rotate(-45deg);margin-bottom:25px;position:relative;
+  animation:beat 1s infinite;
+  box-shadow:0 0 25px #ff2d55;
+}
+.heart:before,.heart:after{
+  content:"";position:absolute;width:100px;height:100px;
+  background:#ff2d55;border-radius:50%;
+}
+.heart:before{top:-50px}
+.heart:after{left:50px}
 
-    @keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+@keyframes beat{
+  0%,100%{transform:rotate(-45deg) scale(1)}
+  50%{transform:rotate(-45deg) scale(1.2)}
+}
 
-    input{
-      margin-top:20px;padding:12px 18px;border-radius:30px;border:none;
-      outline:none;text-align:center;font-size:18px;width:180px;
-    }
+input{
+  padding:12px 18px;border-radius:20px;border:none;
+  outline:none;text-align:center;font-size:18px;
+}
 
-    button{
-      margin-top:12px;padding:10px 24px;border:none;border-radius:25px;
-      background:#ff2d55;color:#fff;font-size:16px;cursor:pointer;
-      transition:.3s
-    }
+button{
+  margin-top:14px;
+  padding:10px 22px;
+  border:none;border-radius:20px;
+  background:#ff2d55;color:#fff;
+  font-size:16px;cursor:pointer;
+  transition:.25s;
+}
+button:hover{transform:scale(1.08)}
 
-    button:hover{transform:scale(1.1)}
+.shake{animation:shake .35s}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+}
 
-    /* ===== MAIN ===== */
-    #main{display:none;width:100%;height:100%;position:relative}
+/* ===== SKY ===== */
+.moon{
+  position:absolute;top:60px;left:50%;
+  transform:translateX(-50%);
+  width:120px;height:120px;border-radius:50%;
+  background:#fff5cc;box-shadow:0 0 70px #fff5cc;
+}
 
-    h1{
-      position:absolute;top:28px;width:100%;text-align:center;
-      font-size:34px;letter-spacing:2px;text-shadow:0 0 18px #ff004c;
-      animation:glow 2s ease-in-out infinite alternate;
-    }
+.star{
+  position:absolute;width:2px;height:2px;background:#fff;
+  animation:twinkle 2s infinite alternate;
+}
+@keyframes twinkle{from{opacity:.2}to{opacity:1}}
 
-    @keyframes glow{from{text-shadow:0 0 10px #ff004c}to{text-shadow:0 0 25px #ff7aa8}}
+/* ===== LANTERN ===== */
+.lantern{
+  position:absolute;bottom:-120px;width:50px;height:70px;
+  background:linear-gradient(#ffb347,#ff3d00);
+  border-radius:12px;cursor:pointer;
+  animation:fly linear forwards;
+  box-shadow:0 0 18px rgba(255,140,0,.9);
+}
+@keyframes fly{
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(-130vh);opacity:0}
+}
 
-    /* ===== LETTER ===== */
-    .letter{
-      position:absolute;width:90px;cursor:pointer;
-      animation:floatUp linear infinite;
-      filter:drop-shadow(0 0 8px #ff4d6d);
-    }
+/* ===== OVERLAY ===== */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.85);
+  display:none;backdrop-filter:blur(10px);
+}
+.overlay.show{display:block}
 
-    @keyframes floatUp{
-      from{transform:translateY(110vh) rotate(0deg)}
-      to{transform:translateY(-130vh) rotate(360deg)}
-    }
+/* ===== CARD ===== */
+.card{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(0) rotateY(90deg);
+  width:300px;height:470px;
+  background:#8b0000;border:4px solid gold;border-radius:18px;
+  color:gold;text-align:center;padding:22px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  transition:.6s;box-shadow:0 0 60px rgba(255,215,0,.8);
+}
+.card.show{transform:translate(-50%,-50%) scale(1) rotateY(0)}
 
-    /* ===== POPUP ===== */
-    #popup{
-      position:fixed;inset:0;background:rgba(0,0,0,.85);
-      display:none;align-items:center;justify-content:center;z-index:20;
-    }
+.card img{width:100%;border-radius:12px;margin-top:12px}
 
-    .card{
-      background:#111;border-radius:22px;padding:24px;
-      max-width:320px;text-align:center;
-      box-shadow:0 0 35px #ff004c;
-      animation:zoom .4s ease;
-    }
+/* ===== LOVE INFO ===== */
+.love{
+  position:absolute;bottom:40px;width:100%;text-align:center;
+  font-size:18px;color:#ffd700;text-shadow:0 0 10px gold;
+}
 
-    @keyframes zoom{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
-
-    .card img{width:100%;border-radius:14px;margin-bottom:12px}
-
-    .close{margin-top:12px;background:#444}
-
-    /* ===== FIREWORK ===== */
-    canvas{position:fixed;inset:0;z-index:-1}
-  </style>
+/* ===== FIREWORK ===== */
+.firework{
+  position:fixed;width:6px;height:6px;background:gold;border-radius:50%;
+  animation:explode 900ms ease-out forwards;
+}
+@keyframes explode{
+  to{transform:translate(var(--x),var(--y));opacity:0}
+}
+</style>
 </head>
+
 <body>
 
 <!-- LOCK -->
-<div id="lockScreen">
-  <div class="heart">💖</div>
-  <input id="pass" type="password" placeholder="Nhập mật khẩu" />
-  <button onclick="unlock()">Mở web</button>
+<div class="lock" id="lock">
+  <div class="heart" id="heart"></div>
+  <input type="password" id="pass" placeholder="Nhập mật khẩu trái tim..." />
+  <button id="unlockBtn">Mở khóa 💖</button>
 </div>
 
-<!-- MAIN -->
-<div id="main">
-  <canvas id="fire"></canvas>
-  <h1>✨ Chúc Mừng Năm Mới 2026 ✨</h1>
+<div class="moon"></div>
+<div class="overlay" id="overlay"></div>
+
+<div class="card" id="card">
+  <div id="text"></div>
+  <img id="photo" style="display:none">
 </div>
 
-<!-- POPUP -->
-<div id="popup">
-  <div class="card">
-    <img id="popImg" src="" />
-    <p id="popText"></p>
-    <button class="close" onclick="closePop()">Đóng</button>
-  </div>
-</div>
+<div class="love" id="love"></div>
+
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-const PASSWORD="0312";
+const correctPass="0312";
+const passInput=pass;
+const lockScreen=lock;
+const unlockBtn=unlockBtn;
 
+/* ===== UNLOCK GOD EFFECT ===== */
 function unlock(){
-  const v=document.getElementById("pass").value;
-  if(v===PASSWORD){
-    lockScreen.style.display="none";
-    main.style.display="block";
-    startLetters();
-    startFirework();
-  }else alert("Sai mật khẩu rồi 💔");
+  if(passInput.value===correctPass){
+
+    heart.style.animation="none";
+    explodeHeart();
+
+    setTimeout(()=>{
+      lockScreen.style.opacity="0";
+      setTimeout(()=>{
+        lockScreen.style.display="none";
+        startSky();
+        showLoveDays();
+        fadeMusic();
+      },800);
+    },500);
+
+  }else{
+    passInput.classList.add("shake");
+    setTimeout(()=>passInput.classList.remove("shake"),350);
+  }
 }
 
-/* LETTER DATA */
-const letters=[
-  {img:"1.jpg",text:"Chúc em năm mới luôn vui vẻ 💕"},
-  {img:"2.jpg",text:"Chúc em thật nhiều sức khỏe ✨"},
-  {img:"3.jpg",text:"Chúc mọi điều tốt đẹp sẽ đến 🌸"},
-  {img:"4.jpg",text:"Mong chúng ta luôn bên nhau 💖"},
-  {img:"5.jpg",text:"Happy New Year 2026 🎆"}
+unlockBtn.onclick=unlock;
+passInput.addEventListener("keypress",e=>{if(e.key==="Enter")unlock();});
+
+/* ===== HEART EXPLOSION ===== */
+function explodeHeart(){
+  for(let i=0;i<40;i++){
+    const f=document.createElement("div");
+    f.className="firework";
+    f.style.left="50%";f.style.top="50%";
+    f.style.setProperty("--x",(Math.random()-0.5)*300+"px");
+    f.style.setProperty("--y",(Math.random()-0.5)*300+"px");
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),900);
+  }
+}
+
+/* ===== SKY ===== */
+function startSky(){
+  for(let i=0;i<90;i++){
+    const s=document.createElement("div");
+    s.className="star";
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
+    s.style.animationDelay=Math.random()*2+"s";
+    document.body.appendChild(s);
+  }
+  setInterval(createLantern,450);
+}
+
+/* ===== LOVE DAYS ===== */
+function showLoveDays(){
+  const start=new Date("2025-12-03");
+  const now=new Date();
+  const days=Math.floor((now-start)/(1000*60*60*24));
+  love.innerHTML=`Thành Khang ❤️ Hoài Thương<br>Đã bên nhau ${days} ngày 💖`;
+}
+
+/* ===== DATA ===== */
+const messages=[
+"Chúc em năm mới 2026 thật nhiều niềm vui 🎆",
+"Mong mọi may mắn sẽ đến với em 🌸",
+"Cảm ơn vì đã luôn ở bên anh 💖",
+"Năm mới mình vẫn nắm tay nhau nhé 🥰",
+"Anh thương em rất nhiều ❤️"
 ];
+const images=["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg"];
 
-function startLetters(){
-  letters.forEach(l=>{
-    const el=document.createElement("img");
-    el.src="letter.png";
-    el.className="letter";
-    el.style.left=Math.random()*90+"vw";
-    el.style.animationDuration=(8+Math.random()*6)+"s";
-    el.onclick=()=>openPop(l);
-    main.appendChild(el);
-  });
+/* ===== LANTERN ===== */
+function createLantern(){
+  const l=document.createElement("div");
+  l.className="lantern";
+  l.style.left=Math.random()*100+"vw";
+  l.style.animationDuration=(7+Math.random()*6)+"s";
+  l.onclick=openCard;
+  document.body.appendChild(l);
+  setTimeout(()=>l.remove(),15000);
 }
 
-function openPop(d){
-  popImg.src=d.img;
-  popText.innerText=d.text;
-  popup.style.display="flex";
+/* ===== OPEN CARD ===== */
+function openCard(){
+  const i=Math.floor(Math.random()*5);
+  text.innerText=messages[i];
+  photo.src=images[i];
+  photo.style.display="block";
+
+  overlay.classList.add("show");
+  card.classList.add("show");
+
+  fadeMusic();
 }
 
-function closePop(){popup.style.display="none"}
+/* ===== CLOSE ===== */
+overlay.onclick=()=>{
+  overlay.classList.remove("show");
+  card.classList.remove("show");
+};
 
-/* FIREWORK */
-function startFirework(){
-  const c=fire,ctx=c.getContext("2d");
-  c.width=innerWidth;c.height=innerHeight;
-
-  const p=[];
-
-  function boom(x,y){
-    for(let i=0;i<70;i++){
-      p.push({x,y,dx:(Math.random()-.5)*6,dy:(Math.random()-.5)*6,life:100});
-    }
-  }
-
-  setInterval(()=>boom(Math.random()*c.width,Math.random()*c.height/2),700);
-
-  function draw(){
-    ctx.fillStyle="rgba(0,0,0,.25)";
-    ctx.fillRect(0,0,c.width,c.height);
-
-    p.forEach(pt=>{
-      pt.x+=pt.dx;pt.y+=pt.dy;pt.life--;
-      ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
-      ctx.fillRect(pt.x,pt.y,3,3);
-    });
-
-    requestAnimationFrame(draw);
-  }
-  draw();
+/* ===== MUSIC FADE IN ===== */
+function fadeMusic(){
+  music.volume=0;
+  music.play().catch(()=>{});
+  let v=0;
+  const fade=setInterval(()=>{
+    v+=0.05;
+    music.volume=v;
+    if(v>=0.6) clearInterval(fade);
+  },120);
 }
 </script>
+
 </body>
 </html>
