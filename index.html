@@ -1,61 +1,188 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Thư Yêu VIP 💌</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy New Year 2026 – FINAL</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif}
 
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  overflow:hidden;
-  font-family: 'Segoe UI', sans-serif;
+    body{
+      background:#000;
+      color:#fff;
+      height:100vh;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
 
-  /* NỀN ĐEN PRO MAX */
-  background: radial-gradient(circle at center, #0b0f2a 0%, #000 80%);
+    /* ===== LOCK SCREEN ===== */
+    #lockScreen{
+      position:fixed;inset:0;background:#000;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      z-index:9999;
+    }
+
+    .heart{font-size:64px;animation:beat 1s infinite}
+
+    @keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+
+    input{
+      margin-top:20px;padding:12px 18px;border-radius:30px;border:none;
+      outline:none;text-align:center;font-size:18px;width:180px;
+    }
+
+    button{
+      margin-top:12px;padding:10px 24px;border:none;border-radius:25px;
+      background:#ff2d55;color:#fff;font-size:16px;cursor:pointer;
+      transition:.3s
+    }
+
+    button:hover{transform:scale(1.1)}
+
+    /* ===== MAIN ===== */
+    #main{display:none;width:100%;height:100%;position:relative}
+
+    h1{
+      position:absolute;top:28px;width:100%;text-align:center;
+      font-size:34px;letter-spacing:2px;text-shadow:0 0 18px #ff004c;
+      animation:glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow{from{text-shadow:0 0 10px #ff004c}to{text-shadow:0 0 25px #ff7aa8}}
+
+    /* ===== LETTER ===== */
+    .letter{
+      position:absolute;width:90px;cursor:pointer;
+      animation:floatUp linear infinite;
+      filter:drop-shadow(0 0 8px #ff4d6d);
+    }
+
+    @keyframes floatUp{
+      from{transform:translateY(110vh) rotate(0deg)}
+      to{transform:translateY(-130vh) rotate(360deg)}
+    }
+
+    /* ===== POPUP ===== */
+    #popup{
+      position:fixed;inset:0;background:rgba(0,0,0,.85);
+      display:none;align-items:center;justify-content:center;z-index:20;
+    }
+
+    .card{
+      background:#111;border-radius:22px;padding:24px;
+      max-width:320px;text-align:center;
+      box-shadow:0 0 35px #ff004c;
+      animation:zoom .4s ease;
+    }
+
+    @keyframes zoom{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+
+    .card img{width:100%;border-radius:14px;margin-bottom:12px}
+
+    .close{margin-top:12px;background:#444}
+
+    /* ===== FIREWORK ===== */
+    canvas{position:fixed;inset:0;z-index:-1}
+  </style>
+</head>
+<body>
+
+<!-- LOCK -->
+<div id="lockScreen">
+  <div class="heart">💖</div>
+  <input id="pass" type="password" placeholder="Nhập mật khẩu" />
+  <button onclick="unlock()">Mở web</button>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <canvas id="fire"></canvas>
+  <h1>✨ Chúc Mừng Năm Mới 2026 ✨</h1>
+</div>
+
+<!-- POPUP -->
+<div id="popup">
+  <div class="card">
+    <img id="popImg" src="" />
+    <p id="popText"></p>
+    <button class="close" onclick="closePop()">Đóng</button>
+  </div>
+</div>
+
+<script>
+const PASSWORD="0312";
+
+function unlock(){
+  const v=document.getElementById("pass").value;
+  if(v===PASSWORD){
+    lockScreen.style.display="none";
+    main.style.display="block";
+    startLetters();
+    startFirework();
+  }else alert("Sai mật khẩu rồi 💔");
 }
 
-/* mặt trăng */
-.moon{
-  position:absolute;
-  top:60px;
-  left:50%;
-  transform:translateX(-50%);
-  width:120px;
-  height:120px;
-  background:#fff5cc;
-  border-radius:50%;
-  box-shadow:0 0 40px #fff5cc;
+/* LETTER DATA */
+const letters=[
+  {img:"1.jpg",text:"Chúc em năm mới luôn vui vẻ 💕"},
+  {img:"2.jpg",text:"Chúc em thật nhiều sức khỏe ✨"},
+  {img:"3.jpg",text:"Chúc mọi điều tốt đẹp sẽ đến 🌸"},
+  {img:"4.jpg",text:"Mong chúng ta luôn bên nhau 💖"},
+  {img:"5.jpg",text:"Happy New Year 2026 🎆"}
+];
+
+function startLetters(){
+  letters.forEach(l=>{
+    const el=document.createElement("img");
+    el.src="letter.png";
+    el.className="letter";
+    el.style.left=Math.random()*90+"vw";
+    el.style.animationDuration=(8+Math.random()*6)+"s";
+    el.onclick=()=>openPop(l);
+    main.appendChild(el);
+  });
 }
 
-/* đèn trời */
-.lantern{
-  position:absolute;
-  bottom:-100px;
-  width:50px;
-  height:70px;
-  background:linear-gradient(#ff9933,#ff3300);
-  border-radius:12px;
-  cursor:pointer;
-  animation: fly linear forwards;
+function openPop(d){
+  popImg.src=d.img;
+  popText.innerText=d.text;
+  popup.style.display="flex";
 }
 
-@keyframes fly{
-  from{ transform: translateY(0); opacity:1; }
-  to{ transform: translateY(-120vh); opacity:0; }
-}
+function closePop(){popup.style.display="none"}
 
-/* overlay */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  display:none;
-  backdrop-filter: blur(6px);
-}
-.overlay.show{display:block}
+/* FIREWORK */
+function startFirework(){
+  const c=fire,ctx=c.getContext("2d");
+  c.width=innerWidth;c.height=innerHeight;
 
-/* thiệp */
-.card{
-  position:f
+  const p=[];
+
+  function boom(x,y){
+    for(let i=0;i<70;i++){
+      p.push({x,y,dx:(Math.random()-.5)*6,dy:(Math.random()-.5)*6,life:100});
+    }
+  }
+
+  setInterval(()=>boom(Math.random()*c.width,Math.random()*c.height/2),700);
+
+  function draw(){
+    ctx.fillStyle="rgba(0,0,0,.25)";
+    ctx.fillRect(0,0,c.width,c.height);
+
+    p.forEach(pt=>{
+      pt.x+=pt.dx;pt.y+=pt.dy;pt.life--;
+      ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
+      ctx.fillRect(pt.x,pt.y,3,3);
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+</script>
+</body>
+</html>
