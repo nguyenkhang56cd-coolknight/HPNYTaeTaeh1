@@ -6,213 +6,173 @@
   <title>Valentine PRO MAX</title>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      background: #000;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
     }
 
-    canvas {
+    body {
+      background: #000; /* nền đen theo yêu cầu */
+      overflow: hidden;
+      color: #fff;
+    }
+
+    /* Bầu trời sao */
+    .stars {
       position: fixed;
-      top: 0;
-      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, #111 0%, #000 80%);
+      overflow: hidden;
       z-index: 0;
     }
 
-    .center-box {
+    .star {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
+      width: 2px;
+      height: 2px;
+      background: #fff;
+      opacity: 0.8;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    /* Lồng đèn bay */
+    .lantern {
+      position: absolute;
+      bottom: -100px;
+      width: 40px;
+      animation: flyUp linear infinite;
+      cursor: pointer;
       z-index: 2;
-      animation: fadeIn 2s ease forwards;
     }
 
-    .title {
-      font-size: 32px;
-      font-weight: bold;
-      margin-bottom: 10px;
+    @keyframes flyUp {
+      from { transform: translateY(0); }
+      to { transform: translateY(-120vh); }
     }
 
-    .days {
-      font-size: 26px;
-      color: #ff4d6d;
-      margin-bottom: 20px;
-    }
-
-    .btn {
-      padding: 12px 26px;
-      border-radius: 999px;
-      border: none;
-      background: linear-gradient(45deg, #ff4d6d, #ff8fa3);
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .btn:hover { transform: scale(1.1); }
-
-    .letters {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .letter {
-      position: absolute;
-      width: 70px;
-      height: 90px;
-      background: #b3001b;
-      border-radius: 8px;
-      box-shadow: 0 0 20px rgba(255, 0, 70, 0.6);
-      cursor: pointer;
-      pointer-events: auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffd700;
-      font-weight: bold;
-      animation: floatUp linear infinite;
-    }
-
-    @keyframes floatUp {
-      from { transform: translateY(100vh) rotate(0deg); }
-      to { transform: translateY(-120vh) rotate(360deg); }
-    }
-
+    /* Popup thư */
     .popup {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.85);
-      display: none;
+      background: rgba(0,0,0,0.9);
+      display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.4s;
       z-index: 5;
     }
 
-    .popup-box {
-      background: #111;
-      padding: 30px;
-      border-radius: 20px;
-      text-align: center;
-      max-width: 320px;
-      animation: zoom 0.4s ease;
+    .popup.active {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .popup img {
-      width: 100%;
+      max-width: 80vw;
+      max-height: 60vh;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(255, 0, 100, 0.6);
+      margin-bottom: 20px;
+    }
+
+    .message {
+      background: linear-gradient(135deg, #ff4d6d, #ff9a9e);
+      padding: 20px 30px;
+      border-radius: 18px;
+      font-size: 18px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 77, 109, 0.6);
+      max-width: 80%;
+    }
+
+    .close {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
       border-radius: 12px;
-      margin-bottom: 10px;
+      background: #ff4d6d;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
     }
 
-    @keyframes zoom {
-      from { transform: scale(0.5); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    audio { display: none; }
   </style>
 </head>
 
 <body>
+  <div class="stars" id="stars"></div>
 
-<canvas id="stars"></canvas>
-
-<div class="letters" id="letters"></div>
-
-<div class="center-box">
-  <div class="title">Chúc mừng Valentine 💖</div>
-  <div class="days" id="days"></div>
-  <button class="btn" onclick="spawnLetters()">Mở những bức thư</button>
-</div>
-
-<div class="popup" id="popup" onclick="this.style.display='none'">
-  <div class="popup-box" onclick="event.stopPropagation()">
+  <!-- Popup nội dung -->
+  <div class="popup" id="popup">
     <img id="popupImg" src="" />
-    <div id="popupText"></div>
+    <div class="message" id="popupText"></div>
+    <button class="close" onclick="closePopup()">Đóng</button>
   </div>
-</div>
 
-<audio autoplay loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
+  <audio id="music" src="music.mp3" loop></audio>
 
-<script>
-// ===== đếm ngày yêu =====
-const startDate = new Date("2025-12-03");
-const today = new Date();
-const diff = Math.floor((today - startDate) / (1000*60*60*24));
-document.getElementById("days").innerText = diff + " ngày bên nhau";
+  <script>
+    const starsContainer = document.getElementById("stars");
 
-// ===== hiệu ứng sao nền =====
-const canvas = document.getElementById("stars");
-const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+    // tạo sao
+    for (let i = 0; i < 120; i++) {
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.left = Math.random() * 100 + "vw";
+      star.style.top = Math.random() * 100 + "vh";
+      star.style.animationDuration = 1 + Math.random() * 2 + "s";
+      starsContainer.appendChild(star);
+    }
 
-let stars = Array.from({length:120}, () => ({
-  x: Math.random()*canvas.width,
-  y: Math.random()*canvas.height,
-  r: Math.random()*2
-}));
+    const messages = [
+      "Chúc em năm mới luôn vui vẻ và bình an 💖",
+      "Mong chúng ta sẽ cùng nhau đi thật lâu thật xa 🌙",
+      "Cảm ơn em đã đến bên anh ✨",
+      "Năm mới chỉ cần có em là đủ 💕",
+      "Yêu em nhiều hơn mỗi ngày 💗"
+    ];
 
-function drawStars(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="white";
-  stars.forEach(s=>{
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fill();
-    s.y += 0.2;
-    if(s.y>canvas.height) s.y=0;
-  });
-  requestAnimationFrame(drawStars);
-}
+    function createLantern(i) {
+      const lantern = document.createElement("img");
+      lantern.src = i + ".jpg";
+      lantern.className = "lantern";
+      lantern.style.left = Math.random() * 100 + "vw";
+      lantern.style.animationDuration = 8 + Math.random() * 6 + "s";
 
-drawStars();
+      lantern.onclick = () => openPopup(i - 1);
 
-// ===== dữ liệu thư =====
-const messages = [
-  "Chúc em luôn vui vẻ 💕",
-  "Năm mới hạnh phúc nhé 💖",
-  "Luôn bên anh nha 🌸",
-  "Mãi thương em 😘",
-  "Yêu em rất nhiều ❤️"
-];
+      document.body.appendChild(lantern);
+    }
 
-function spawnLetters(){
-  const wrap = document.getElementById("letters");
-  wrap.innerHTML="";
+    for (let i = 1; i <= 5; i++) createLantern(i);
 
-  for(let i=0;i<10;i++){
-    const l = document.createElement("div");
-    l.className="letter";
-    l.innerText="❤";
+    function openPopup(index) {
+      document.getElementById("popupImg").src = (index + 1) + ".jpg";
+      document.getElementById("popupText").innerText = messages[index];
+      document.getElementById("popup").classList.add("active");
+      document.getElementById("music").play();
+    }
 
-    l.style.left = Math.random()*100+"vw";
-    l.style.animationDuration = 6+Math.random()*6+"s";
+    function closePopup() {
+      document.getElementById("popup").classList.remove("active");
+    }
 
-    l.onclick = ()=>openPopup(i%5);
-
-    wrap.appendChild(l);
-  }
-}
-
-function openPopup(i){
-  document.getElementById("popupImg").src = (i+1)+".jpg";
-  document.getElementById("popupText").innerText = messages[i];
-  document.getElementById("popup").style.display="flex";
-}
-</script>
-
+    // auto play nhạc khi chạm màn hình lần đầu
+    document.body.addEventListener("click", () => {
+      document.getElementById("music").play();
+    }, { once: true });
+  </script>
 </body>
 </html>
