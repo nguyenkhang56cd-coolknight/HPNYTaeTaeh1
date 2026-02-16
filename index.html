@@ -1,194 +1,216 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Thư Yêu VIP 💌</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine PRO MAX</title>
 
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  overflow:hidden;
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at center, #0b0f2a, #000);
-}
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* mặt trăng */
-.moon{
-  position:absolute;
-  top:60px;
-  left:50%;
-  transform:translateX(-50%);
-  width:120px;
-  height:120px;
-  background:#fff5cc;
-  border-radius:50%;
-  box-shadow:0 0 40px #fff5cc;
-}
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
 
-/* đèn trời */
-.lantern{
-  position:absolute;
-  bottom:-100px;
-  width:50px;
-  height:70px;
-  background:linear-gradient(#ff9933,#ff3300);
-  border-radius:12px;
-  cursor:pointer;
-  animation: fly linear forwards;
-}
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
 
-@keyframes fly{
-  from{ transform: translateY(0); opacity:1; }
-  to{ transform: translateY(-120vh); opacity:0; }
-}
+    .center-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 2;
+      animation: fadeIn 2s ease forwards;
+    }
 
-/* overlay */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  display:none;
-  backdrop-filter: blur(6px);
-}
-.overlay.show{display:block}
+    .title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
 
-/* thiệp */
-.card{
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%) scale(0) rotateY(90deg);
-  width:260px;
-  height:420px;
-  background:#b30000;
-  border:5px solid gold;
-  border-radius:14px;
-  color:gold;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:20px;
-  transition:.6s ease;
-  box-shadow:0 0 40px rgba(255,215,0,.6);
-}
-.card.show{
-  transform:translate(-50%,-50%) scale(1) rotateY(0deg);
-}
+    .days {
+      font-size: 26px;
+      color: #ff4d6d;
+      margin-bottom: 20px;
+    }
 
-.card img{
-  width:100%;
-  border-radius:10px;
-  margin-top:10px;
-}
+    .btn {
+      padding: 12px 26px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(45deg, #ff4d6d, #ff8fa3);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-/* pháo hoa */
-.firework{
-  position:fixed;
-  width:6px;
-  height:6px;
-  background:gold;
-  border-radius:50%;
-  pointer-events:none;
-  animation: explode 800ms ease-out forwards;
-}
-@keyframes explode{
-  to{
-    transform: translate(var(--x), var(--y));
-    opacity:0;
-  }
-}
-</style>
+    .btn:hover { transform: scale(1.1); }
+
+    .letters {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .letter {
+      position: absolute;
+      width: 70px;
+      height: 90px;
+      background: #b3001b;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(255, 0, 70, 0.6);
+      cursor: pointer;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffd700;
+      font-weight: bold;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(100vh) rotate(0deg); }
+      to { transform: translateY(-120vh) rotate(360deg); }
+    }
+
+    .popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    .popup-box {
+      background: #111;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 320px;
+      animation: zoom 0.4s ease;
+    }
+
+    .popup img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+
+    @keyframes zoom {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="moon"></div>
-<div class="overlay" id="overlay"></div>
+<canvas id="stars"></canvas>
 
-<div class="card" id="card">
-  <div id="text"></div>
-  <img id="photo" src="" style="display:none" />
+<div class="letters" id="letters"></div>
+
+<div class="center-box">
+  <div class="title">Chúc mừng Valentine 💖</div>
+  <div class="days" id="days"></div>
+  <button class="btn" onclick="spawnLetters()">Mở những bức thư</button>
 </div>
 
-<!-- nhạc nền -->
-<audio id="music" loop>
+<div class="popup" id="popup" onclick="this.style.display='none'">
+  <div class="popup-box" onclick="event.stopPropagation()">
+    <img id="popupImg" src="" />
+    <div id="popupText"></div>
+  </div>
+</div>
+
+<audio autoplay loop>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <script>
+// ===== đếm ngày yêu =====
+const startDate = new Date("2025-12-03");
+const today = new Date();
+const diff = Math.floor((today - startDate) / (1000*60*60*24));
+document.getElementById("days").innerText = diff + " ngày bên nhau";
+
+// ===== hiệu ứng sao nền =====
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let stars = Array.from({length:120}, () => ({
+  x: Math.random()*canvas.width,
+  y: Math.random()*canvas.height,
+  r: Math.random()*2
+}));
+
+function drawStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="white";
+  stars.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+    s.y += 0.2;
+    if(s.y>canvas.height) s.y=0;
+  });
+  requestAnimationFrame(drawStars);
+}
+
+drawStars();
+
+// ===== dữ liệu thư =====
 const messages = [
-"Chúc em năm mới thật nhiều niềm vui 💖",
-"Mong mọi điều may mắn sẽ đến với em 🌸",
-"Cảm ơn vì đã ở bên anh ✨",
-"Chúng ta hãy cùng hạnh phúc thật lâu nhé 🥰",
-"Anh thương em nhiều lắm ❤️"
+  "Chúc em luôn vui vẻ 💕",
+  "Năm mới hạnh phúc nhé 💖",
+  "Luôn bên anh nha 🌸",
+  "Mãi thương em 😘",
+  "Yêu em rất nhiều ❤️"
 ];
 
-const images = ["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg"];
+function spawnLetters(){
+  const wrap = document.getElementById("letters");
+  wrap.innerHTML="";
 
-function createLantern(){
-  const l = document.createElement("div");
-  l.className = "lantern";
-  l.style.left = Math.random()*100 + "vw";
-  l.style.animationDuration = (8 + Math.random()*6) + "s";
+  for(let i=0;i<10;i++){
+    const l = document.createElement("div");
+    l.className="letter";
+    l.innerText="❤";
 
-  l.onclick = () => openCard();
+    l.style.left = Math.random()*100+"vw";
+    l.style.animationDuration = 6+Math.random()*6+"s";
 
-  document.body.appendChild(l);
-  setTimeout(()=> l.remove(),15000);
-}
+    l.onclick = ()=>openPopup(i%5);
 
-setInterval(createLantern,700);
-
-function openCard(){
-  const i = Math.floor(Math.random()*5);
-
-  document.getElementById("text").innerText = messages[i];
-
-  const img = document.getElementById("photo");
-  img.src = images[i];
-  img.style.display = "block";
-
-  document.getElementById("overlay").classList.add("show");
-  document.getElementById("card").classList.add("show");
-
-  playMusic();
-  fireworks();
-}
-
-function closeCard(){
-  document.getElementById("overlay").classList.remove("show");
-  document.getElementById("card").classList.remove("show");
-}
-
-document.getElementById("overlay").onclick = closeCard;
-
-function playMusic(){
-  const m = document.getElementById("music");
-  m.volume = 0.6;
-  m.play().catch(()=>{});
-}
-
-function fireworks(){
-  for(let i=0;i<40;i++){
-    const f = document.createElement("div");
-    f.className = "firework";
-
-    const x = (Math.random()-0.5)*300 + "px";
-    const y = (Math.random()-0.5)*300 + "px";
-
-    f.style.left = "50%";
-    f.style.top = "50%";
-    f.style.setProperty("--x", x);
-    f.style.setProperty("--y", y);
-
-    document.body.appendChild(f);
-    setTimeout(()=>f.remove(),800);
+    wrap.appendChild(l);
   }
+}
+
+function openPopup(i){
+  document.getElementById("popupImg").src = (i+1)+".jpg";
+  document.getElementById("popupText").innerText = messages[i];
+  document.getElementById("popup").style.display="flex";
 }
 </script>
 
