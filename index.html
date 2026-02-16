@@ -154,36 +154,48 @@ button:hover{transform:scale(1.08)}
 </audio>
 
 <script>
-const correctPass="0312";
-const passInput=pass;
-const lockScreen=lock;
-const unlockBtn=unlockBtn;
+const correctPass = "0312";
 
-/* ===== UNLOCK GOD EFFECT ===== */
+const passInput = document.getElementById("pass");
+const lockScreen = document.getElementById("lock");
+const unlockBtn = document.getElementById("unlockBtn");
+const heart = document.getElementById("heart");
+
+/* ===== UNLOCK ===== */
 function unlock(){
-  if(passInput.value===correctPass){
+  if(passInput.value === correctPass){
 
-    heart.style.animation="none";
+    // dừng tim đập + nổ pháo hoa
+    heart.style.animation = "none";
     explodeHeart();
 
+    // fade out màn hình khóa
     setTimeout(()=>{
-      lockScreen.style.opacity="0";
+      lockScreen.style.opacity = "0";
+
       setTimeout(()=>{
-        lockScreen.style.display="none";
+        lockScreen.style.display = "none";
         startSky();
         showLoveDays();
         fadeMusic();
-      },800);
-    },500);
+      }, 800);
+
+    }, 400);
 
   }else{
     passInput.classList.add("shake");
-    setTimeout(()=>passInput.classList.remove("shake"),350);
+    setTimeout(()=>passInput.classList.remove("shake"), 350);
   }
 }
 
-unlockBtn.onclick=unlock;
-passInput.addEventListener("keypress",e=>{if(e.key==="Enter")unlock();});
+/* click nút */
+unlockBtn.addEventListener("click", unlock);
+
+/* nhấn Enter */
+passInput.addEventListener("keypress", e=>{
+  if(e.key === "Enter") unlock();
+});
+
 
 /* ===== HEART EXPLOSION ===== */
 function explodeHeart(){
